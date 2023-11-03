@@ -15,7 +15,7 @@ int thermistor = A0;
 int strainGauge = A1; 
 
 void setup() {
-    Serial.Begin(9600); 
+    Serial.begin(9600); 
     pinMode(onOffButton, INPUT); 
     pinMode(ESTOP, INPUT); 
     pinMode(doorSensor, INPUT); 
