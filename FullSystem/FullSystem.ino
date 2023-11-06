@@ -3,9 +3,9 @@
 int onOffButton = 1; 
 int ESTOP = 2; 
 int doorSensor = 3; 
-    // outputs
-int heater = 4; 
-int soapPump = 5; 
+    // outputs 
+int soapPump = 4; 
+int heater = 5; 
 int doorLock = 6; 
 int sol1 = 7; 
 int sol2 = 8; 
@@ -19,7 +19,6 @@ int strainGauge = A1;
 // 2: Button has been pressed & Cycle is in process, button turns red
 // 3: Cycle successfully completed
 // 4: Stop button pressed
-// 5: ESTOP pressed
 int state = 0;
 
 // For Display
@@ -82,7 +81,6 @@ void loop() {
             pumpOFF(); 
         }
         if (state ==4) pauseCycle(); 
-        if (state == 5) estop(); 
     }
 }
 void make_display(){
@@ -190,9 +188,5 @@ void Cycle(){
 }
 
 void pauseCycle(){
-
-}
-
-void estop(){
 
 }
