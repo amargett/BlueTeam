@@ -1,3 +1,9 @@
+//parameters
+int safe_temp = 120; // degrees F
+int heater_startup_time = 5; // seconds
+int hotwater_time = 25; // seconds
+int coldwater_time = 30; // seconds
+
 // digital pins
     // inputs
 int onOffButton = 1; 
@@ -48,7 +54,6 @@ void setup() {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
     Serial.begin(9600); 
     pinMode(onOffButton, INPUT); 
-    pinMode(ESTOP, INPUT); 
     pinMode(doorSensor, INPUT); 
     pinMode(heater, OUTPUT); 
     pinMode(soapPump, OUTPUT); 
@@ -59,26 +64,21 @@ void setup() {
 
 void loop() {
     make_display(); 
-    read_thermistor(); // updates variable T, degrees F
-    if (cycle_ready()){
+    if (bottle_present() & door_closed()){
         if (state == 1) {
-            power_button(); 
             if (start_stop_pressed()) state = 2; 
         }
         if (state ==2){
             if (cycle_time = 0){
                 lock_door(); 
-                pumpON();
+                heater_ON();
                 cycle_time = millis();
             }
-            Cycle();
             if (start_stop_pressed()) state = 4; 
-            if (estop_pressed()) state = 5; 
+            Cycle();
         }
         if (state ==3){
             unlock_door(); 
-            cut_power_heater();
-            pumpOFF(); 
         }
         if (state ==4) pauseCycle(); 
     }
@@ -124,25 +124,22 @@ void read_thermistor(){
   T = (T * 9.0)/ 5.0 + 32.0;
 }
 
+bool temp_OK(){
+    read_thermistor(); 
+    if (T< safe_temp) return true; 
+    else return false; 
+}
+
 bool start_stop_pressed(){
     //implement, should check whether or not someone pressed the button
 }
 
-bool estop_pressed(){
-
-}
-
-bool cycle_ready(){
-    if (bottle_present() & door_closed()) return true; 
-    else return false; 
-}
-
 bool bottle_present(){
-
+// read strain gauges
 }
 
 bool door_closed(){
-    
+// read from door lock
 }
 
 void lock_door(){
@@ -153,37 +150,53 @@ void unlock_door(){
 
 }
 
-void power_button(){
+void heater_ON(){
 
 }
 
-void power_heater(){
+void heater_OFF(){
 
 }
 
-void cut_power_heater(){
+void open_sol1(){
 
 }
-
-void switchsol1(){
+void close_sol1(){
 
 }
+void open_sol2(){
 
-void switchsol2(){
+}
+void close_sol2(){
 
 }
 
 void pumpON(){
-
+    digitalWrite(soapPump, HIGH); 
 }
 
 void pumpOFF(){
-
+    digitalWrite(soapPump, LOW); 
 }
 
 void Cycle(){
-    if (cycle_time > 20000){
-
+    if (cycle_time > heater_startup_time*1000){
+        if(cycle_time < hotwater_time*1000){
+            open_sol1();
+            pumpON();
+            delay(50); 
+            pumpOFF(); 
+            delay(100); 
+        }
+        else if (cycle_time < coldwater_time*1000){
+            heater_OFF();
+            close_sol1(); 
+            open_sol2(); 
+        }
+        else {
+            close_sol2(); 
+            state = 3; 
+        }
     }
 }
 
