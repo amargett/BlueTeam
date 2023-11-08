@@ -3,11 +3,12 @@ int safe_temp = 120; // degrees F
 int heater_startup_time = 5; // seconds
 int hotwater_time = 25; // seconds
 int coldwater_time = 30; // seconds
+int pump_time = 1.2; //seconds
 
 // digital pins
     // inputs
-int onOffButton = 1; 
-int ESTOP = 2; 
+int serviceLEDs = 1; 
+int onOffButton = 2; 
 int doorSensor = 3; 
     // outputs 
 int soapPump = 4; 
@@ -15,6 +16,7 @@ int heater = 5;
 int doorLock = 6; 
 int sol1 = 7; 
 int sol2 = 8; 
+int soapSensor =9; 
 // analog pins, both inputs
 int thermistor = A0; 
 int strainGauge = A1; 
@@ -50,6 +52,9 @@ int button_state = 0;
 //cycle 
 long int cycle_time = 0; 
 
+// liquid level sensor
+int soapVal = 0; 
+
 void setup() {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
     Serial.begin(9600); 
@@ -60,10 +65,12 @@ void setup() {
     pinMode(doorLock, OUTPUT); 
     pinMode(sol1, OUTPUT); 
     pinMode(sol2, OUTPUT); 
+    pinMode(soapSensor, INPUT);
 }
 
 void loop() {
     make_display(); 
+    if (soap_OK() == false) serviceLEDON(); // check soap levels
     if (bottle_present() & door_closed()){
         if (state == 1) {
             if (start_stop_pressed()) state = 2; 
@@ -142,6 +149,12 @@ bool door_closed(){
 // read from door lock
 }
 
+bool soap_OK(){
+  soapVal = digitalRead(soapSensor);
+  if (soapVal == 1) return true; 
+  else return false; 
+}
+
 void lock_door(){
 
 }
@@ -179,14 +192,16 @@ void pumpOFF(){
     digitalWrite(soapPump, LOW); 
 }
 
+void serviceLEDON(){
+
+}
+
 void Cycle(){
     if (cycle_time > heater_startup_time*1000){
         if(cycle_time < hotwater_time*1000){
             open_sol1();
-            pumpON();
-            delay(50); 
-            pumpOFF(); 
-            delay(100); 
+            if(cycle_time < (hotwater_time +pump_time)*1000) pumpON(); 
+            else pumpOFF(); 
         }
         else if (cycle_time < coldwater_time*1000){
             heater_OFF();
