@@ -80,7 +80,7 @@ void loop() {
         }
         if (state ==2){
             if (cycle_time = 0){
-                lock_door(); 
+                ON(doorLock); 
                 ON(heater);
                 cycle_time = millis();
             }
@@ -88,7 +88,7 @@ void loop() {
             Cycle();
         }
         if (state ==3){
-            unlock_door(); 
+            OFF(doorLock); 
         }
         if (state ==4) pauseCycle(); 
     }
@@ -139,14 +139,6 @@ bool soap_OK(){
   soapVal = digitalRead(soapSensor);
   if (soapVal == 1) return true; 
   else return false; 
-}
-
-void lock_door(){
-
-}
-
-void unlock_door(){
-
 }
 
 void ON(int pin_toWrite){

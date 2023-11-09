@@ -1,9 +1,6 @@
-const int button_pin = 2; 
 const int pump_pin = 4; 
 
-int button_state; 
 void setup() {
-pinMode(button_pin, INPUT_PULLUP);
 pinMode(pump_pin, OUTPUT); 
 Serial.begin(9600);
 }
