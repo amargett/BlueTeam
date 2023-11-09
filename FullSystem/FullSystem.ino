@@ -20,7 +20,6 @@ int soapSensor =9;
 int drainSwitch = 10;
 int LEDs = 11; 
 // analog pins, both inputs
-int thermistor = A0; 
 int strainGauge = A1; 
 
 //state variables
@@ -129,15 +128,6 @@ void cycle_complete(){
     display.setTextSize(2);
     display.setTextColor(WHITE); 
     display.print("Cycle     Complete!");
-}
-
-void read_thermistor(){
-  Vo = analogRead(thermistor);
-  R2 = R1 * (1023.0 / (float)Vo - 1.0);
-  logR2 = log(R2);
-  T = (1.0 / (c1 + c2*logR2 + c3*logR2*logR2*logR2));
-  T = T - 273.15;
-  T = (T * 9.0)/ 5.0 + 32.0;
 }
 
 bool temp_OK(){
