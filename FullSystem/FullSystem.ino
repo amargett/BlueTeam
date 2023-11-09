@@ -130,12 +130,6 @@ void cycle_complete(){
     display.print("Cycle     Complete!");
 }
 
-bool temp_OK(){
-    read_thermistor(); 
-    if (T< safe_temp) return true; 
-    else return false; 
-}
-
 bool start_stop_pressed(){
     //implement, should check whether or not someone pressed the button
 }
