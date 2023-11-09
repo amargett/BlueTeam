@@ -7,10 +7,9 @@ int pump_time = 1.2; //seconds
 
 // digital pins
     // inputs
-int onOffButton = 1; 
-int hallEffect = 2; 
-int doorSensor = 3; 
+int onOffButton = 2; //interrupt pin
     // outputs 
+int LEDs = 3;
 int soapPump = 4; 
 int heater = 5; 
 int doorLock = 6; 
@@ -18,7 +17,8 @@ int sol1 = 7;
 int sol2 = 8; 
 int soapSensor =9; 
 int drainSwitch = 10;
-int LEDs = 11; 
+int bottleDetect = 11;
+int doorDetect = 12;
 // analog pins, both inputs
 int strainGauge = A1; 
 
@@ -56,37 +56,32 @@ long int cycle_time = 0;
 // liquid level sensor
 int soapVal = 0; 
 
-//hall effect 
- volatile byte half_revolutions = 0;
- unsigned int rpm =0;
- unsigned long timeold = 0;
 
 void setup() {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
     Serial.begin(9600); 
     pinMode(onOffButton, INPUT); 
-    pinMode(doorSensor, INPUT); 
+    pinMode(doorDetect, INPUT); 
     pinMode(heater, OUTPUT); 
     pinMode(soapPump, OUTPUT); 
     pinMode(doorLock, OUTPUT); 
     pinMode(sol1, OUTPUT); 
     pinMode(sol2, OUTPUT); 
     pinMode(soapSensor, INPUT);
-    attachInterrupt(0, magnet_detect, RISING);//Initialize the intterrupt pin (Arduino digital pin 2)
-
+    pinMode(bottleDetect,INPUT);
 }
 
 void loop() {
     make_display(); 
     if (soap_OK() == false) serviceLEDON(); // check soap levels
-    if (bottle_present() & door_closed()){
+    if (pinHigh(bottleDetect) & pinHigh(doorDetect)){ // if bottle present and door closed 
         if (state == 1) {
             if (start_stop_pressed()) state = 2; 
         }
         if (state ==2){
             if (cycle_time = 0){
                 lock_door(); 
-                heater_ON();
+                ON(heater);
                 cycle_time = millis();
             }
             if (start_stop_pressed()) state = 4; 
@@ -134,12 +129,10 @@ bool start_stop_pressed(){
     //implement, should check whether or not someone pressed the button
 }
 
-bool bottle_present(){
-// read strain gauges
-}
-
-bool door_closed(){
-// read from door lock
+bool pinHigh(int pin_toRead){
+    int val = digitalRead(pin_toRead); 
+    if (val == HIGH) return true; 
+    else return false; 
 }
 
 bool soap_OK(){
@@ -156,33 +149,12 @@ void unlock_door(){
 
 }
 
-void heater_ON(){
-
+void ON(int pin_toWrite){
+digitalWrite(pin_toWrite, HIGH);
 }
 
-void heater_OFF(){
-
-}
-
-void open_sol1(){
-
-}
-void close_sol1(){
-
-}
-void open_sol2(){
-
-}
-void close_sol2(){
-
-}
-
-void pumpON(){
-    digitalWrite(soapPump, HIGH); 
-}
-
-void pumpOFF(){
-    digitalWrite(soapPump, LOW); 
+void OFF(int pin_toWrite){
+    digitalWrite(pin_toWrite, LOW);
 }
 
 void serviceLEDON(){
@@ -192,17 +164,17 @@ void serviceLEDON(){
 void Cycle(){
     if (cycle_time > heater_startup_time*1000){
         if(cycle_time < hotwater_time*1000){
-            open_sol1();
-            if(cycle_time < (hotwater_time +pump_time)*1000) pumpON(); 
-            else pumpOFF(); 
+            ON(sol1);
+            if(cycle_time < (hotwater_time +pump_time)*1000) ON(soapPump); 
+            else OFF(soapPump); 
         }
         else if (cycle_time < coldwater_time*1000){
-            heater_OFF();
-            close_sol1(); 
-            open_sol2(); 
+            OFF(heater);
+            OFF(sol1); 
+            ON(sol2); 
         }
         else {
-            close_sol2(); 
+            OFF(sol2); 
             state = 3; 
         }
     }
@@ -211,8 +183,3 @@ void Cycle(){
 void pauseCycle(){
 
 }
- void magnet_detect()//This function is called whenever a magnet/interrupt is detected by the arduino
- {
-   half_revolutions++;
-   Serial.println("detect");
- }
