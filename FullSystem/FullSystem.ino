@@ -7,8 +7,8 @@ int pump_time = 1.2; //seconds
 
 // digital pins
     // inputs
-int serviceLEDs = 1; 
-int onOffButton = 2; 
+int onOffButton = 1; 
+int hallEffect = 2; 
 int doorSensor = 3; 
     // outputs 
 int soapPump = 4; 
@@ -17,6 +17,8 @@ int doorLock = 6;
 int sol1 = 7; 
 int sol2 = 8; 
 int soapSensor =9; 
+int drainSwitch = 10;
+int LEDs = 11; 
 // analog pins, both inputs
 int thermistor = A0; 
 int strainGauge = A1; 
@@ -55,6 +57,11 @@ long int cycle_time = 0;
 // liquid level sensor
 int soapVal = 0; 
 
+//hall effect 
+ volatile byte half_revolutions = 0;
+ unsigned int rpm =0;
+ unsigned long timeold = 0;
+
 void setup() {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
     Serial.begin(9600); 
@@ -66,6 +73,8 @@ void setup() {
     pinMode(sol1, OUTPUT); 
     pinMode(sol2, OUTPUT); 
     pinMode(soapSensor, INPUT);
+    attachInterrupt(0, magnet_detect, RISING);//Initialize the intterrupt pin (Arduino digital pin 2)
+
 }
 
 void loop() {
@@ -218,3 +227,8 @@ void Cycle(){
 void pauseCycle(){
 
 }
+ void magnet_detect()//This function is called whenever a magnet/interrupt is detected by the arduino
+ {
+   half_revolutions++;
+   Serial.println("detect");
+ }
