@@ -7,7 +7,7 @@ int pump_time = 1.2; //seconds
 
 // digital pins
     // inputs
-int Button = 2; //interrupt pin
+int button = 2; //interrupt pin
     // outputs 
 int LEDs = 3;
 int soapPump = 4; 
@@ -16,7 +16,7 @@ int doorLock = 6;
 int sol1 = 7; 
 int sol2 = 8; 
 int soapSensor =9; 
-int drainSwitch = 10;
+int overflow = 10;
 int bottleDetect = 11;
 int doorDetect = 12;
 // analog pins, both inputs
@@ -39,14 +39,6 @@ int state = 0;
 Adafruit_SSD1306 display(OLED_RESET);
 int display_time = 0; 
 
-//Temp reading 
-int Vo;
-//float R1 = 10000; for steve's
-float R1 = 100000;
-float logR2, R2, T;
-//float c1 = 0.9144715380e-03, c2 = 2.245308254e-04, c3 = 1.139737662e-07; for steve's
-float c1 = 0.4387959262e-03, c2 = 2.532398804e-04, c3 = -0.002040347193e-07;
-
 //buttons
 int button_state = 0; 
 
@@ -57,22 +49,24 @@ long int cycle_time = 0;
 int soapVal = 0; 
 
 void setup() {
-    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
+    display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize display
     Serial.begin(9600); 
-    pinMode(Button, INPUT_PULLUP); 
-    pinMode(doorDetect, INPUT); 
     pinMode(heater, OUTPUT); 
     pinMode(soapPump, OUTPUT); 
     pinMode(doorLock, OUTPUT); 
     pinMode(sol1, OUTPUT); 
     pinMode(sol2, OUTPUT); 
+    pinMode(button, INPUT_PULLUP); 
+    pinMode(doorDetect, INPUT); 
     pinMode(soapSensor, INPUT);
     pinMode(bottleDetect,INPUT);
+    pinMode(overflow, INPUT_PULLUP); 
 }
 
 void loop() {
     make_display(); 
-    if (soap_OK() == false) serviceLEDON(); // check soap levels
+    if (pinHigh(soapPump) == false) serviceLEDON(); // check soap levels
+    if (pinHigh(overflow)== true) serviceLEDON(); 
     if (pinHigh(bottleDetect) & pinHigh(doorDetect)){ // if bottle present and door closed 
         if (state == 1) {
             if (pinHigh(Button)== false) state = 2; 
@@ -128,12 +122,6 @@ bool pinHigh(int pin_toRead){
     int val = digitalRead(pin_toRead); 
     if (val == HIGH) return true; 
     else return false; 
-}
-
-bool soap_OK(){
-  soapVal = digitalRead(soapSensor);
-  if (soapVal == 1) return true; 
-  else return false; 
 }
 
 void ON(int pin_toWrite){
