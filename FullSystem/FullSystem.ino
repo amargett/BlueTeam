@@ -8,6 +8,10 @@ int pump_time = 1.2; //seconds
 // digital pins
     // inputs
 int button = 2; //interrupt pin
+int soapSensor =9; 
+int overflow = 10;
+int bottleDetect = 11;
+int doorDetect = 12;
     // outputs 
 int LEDs = 3;
 int soapPump = 4; 
@@ -15,12 +19,6 @@ int heater = 5;
 int doorLock = 6; 
 int sol1 = 7; 
 int sol2 = 8; 
-int soapSensor =9; 
-int overflow = 10;
-int bottleDetect = 11;
-int doorDetect = 12;
-// analog pins, both inputs
-int strainGauge = A1; 
 
 //state variables
 // 0: Machine Powered on, No power to buttons, cycle not going
