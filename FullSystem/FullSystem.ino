@@ -7,7 +7,7 @@ int pump_time = 1.2; //seconds
 
 // digital pins
     // inputs
-int onOffButton = 2; //interrupt pin
+int Button = 2; //interrupt pin
     // outputs 
 int LEDs = 3;
 int soapPump = 4; 
@@ -56,11 +56,10 @@ long int cycle_time = 0;
 // liquid level sensor
 int soapVal = 0; 
 
-
 void setup() {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
     Serial.begin(9600); 
-    pinMode(onOffButton, INPUT); 
+    pinMode(Button, INPUT_PULLUP); 
     pinMode(doorDetect, INPUT); 
     pinMode(heater, OUTPUT); 
     pinMode(soapPump, OUTPUT); 
@@ -76,7 +75,7 @@ void loop() {
     if (soap_OK() == false) serviceLEDON(); // check soap levels
     if (pinHigh(bottleDetect) & pinHigh(doorDetect)){ // if bottle present and door closed 
         if (state == 1) {
-            if (start_stop_pressed()) state = 2; 
+            if (pinHigh(Button)== false) state = 2; 
         }
         if (state ==2){
             if (cycle_time = 0){
@@ -84,7 +83,7 @@ void loop() {
                 ON(heater);
                 cycle_time = millis();
             }
-            if (start_stop_pressed()) state = 4; 
+            if (pinHigh(Button)== true) state = 4; 
             Cycle();
         }
         if (state ==3){
@@ -123,10 +122,6 @@ void cycle_complete(){
     display.setTextSize(2);
     display.setTextColor(WHITE); 
     display.print("Cycle     Complete!");
-}
-
-bool start_stop_pressed(){
-    //implement, should check whether or not someone pressed the button
 }
 
 bool pinHigh(int pin_toRead){
