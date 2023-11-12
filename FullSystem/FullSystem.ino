@@ -1,32 +1,33 @@
 //parameters
-int safe_temp = 120; // degrees F
-int heater_startup_time = 5; // seconds
-int hotwater_time = 25; // seconds
-int coldwater_time = 30; // seconds
-int pump_time = 1.2; //seconds
+float heater_startup_time = 5.0; // seconds
+float hotwater_time = 20.0; // seconds
+float coldwater_time = 10.0; // seconds
+float pump_time = 1.2; //seconds
+float time_to_pause = 2.0; 
 
 // digital pins
     // inputs
 int button = 2; //interrupt pin
 int soapSensor =9; 
 int overflow = 10;
-int bottleDetect = 11;
-int doorDetect = 12;
+
     // outputs 
 int LEDs = 3;
-int soapPump = 4; 
-int heater = 5; 
-int doorLock = 6; 
-int sol1 = 7; 
-int sol2 = 8; 
+int soapPump = 4; //MOSFET
+int heater = 5;  //relay
+int doorLock = 6; //MOSFET
+int sol1 = 7; //relay
+int sol2 = 8; //relay
+
+int A1 = bottleDetect; //hall effect
+int A2 = doorDetect; //hall effect
 
 //state variables
-// 0: Machine Powered on, No power to buttons, cycle not going
 // 1: Bottle has been placed & Door is closed, button turns green
 // 2: Button has been pressed & Cycle is in process, button turns red
 // 3: Cycle successfully completed
 // 4: Stop button pressed
-int state = 0;
+int state = 1;
 
 // For Display
 #include <SPI.h>
@@ -37,14 +38,10 @@ int state = 0;
 Adafruit_SSD1306 display(OLED_RESET);
 int display_time = 0; 
 
-//buttons
-int button_state = 0; 
-
-//cycle 
+//cycle & pause vars
 long int cycle_time = 0; 
+long int pause_time = 0; 
 
-// liquid level sensor
-int soapVal = 0; 
 
 void setup() {
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize display
@@ -63,8 +60,8 @@ void setup() {
 
 void loop() {
     make_display(); 
-    if (pinHigh(soapPump) == false) serviceLEDON(); // check soap levels
-    if (pinHigh(overflow)== true) serviceLEDON(); 
+    if (pinHigh(soapPump) == false) ON(LEDs); // check soap levels
+    if (pinHigh(overflow)== true) ON(LEDs); // Liquid level overflow
     if (pinHigh(bottleDetect) & pinHigh(doorDetect)){ // if bottle present and door closed 
         if (state == 1) {
             if (pinHigh(Button)== false) state = 2; 
@@ -76,7 +73,7 @@ void loop() {
                 cycle_time = millis();
             }
             if (pinHigh(Button)== true) state = 4; 
-            Cycle();
+            else Cycle();
         }
         if (state ==3){
             OFF(doorLock); 
@@ -130,18 +127,14 @@ void OFF(int pin_toWrite){
     digitalWrite(pin_toWrite, LOW);
 }
 
-void serviceLEDON(){
-
-}
-
 void Cycle(){
     if (cycle_time > heater_startup_time*1000){
-        if(cycle_time < hotwater_time*1000){
+        if(cycle_time < (heater_startup_time + hotwater_time)*1000){
             ON(sol1);
-            if(cycle_time < (hotwater_time +pump_time)*1000) ON(soapPump); 
+            if(cycle_time < (heater_startup_time +pump_time)*1000) ON(soapPump); 
             else OFF(soapPump); 
         }
-        else if (cycle_time < coldwater_time*1000){
+        else if (cycle_time < (heater_startup_time + hotwater_time + coldwater_time)*1000){
             OFF(heater);
             OFF(sol1); 
             ON(sol2); 
@@ -154,5 +147,10 @@ void Cycle(){
 }
 
 void pauseCycle(){
-
+    while(pause_time < time_to_pause*1000){
+        OFF(heater); 
+        OFF(soapPump); 
+        OFF(sol1); 
+        OFF(sol2); 
+        OFF(doorlock); }
 }
