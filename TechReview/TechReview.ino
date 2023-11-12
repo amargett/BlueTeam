@@ -73,8 +73,10 @@ void loop()
 
         // MAKE THE DISPLAY SAY THE WE ARE MANUALLY OVERRIDING
         display.clearDisplay();
-        display.print("MANUALLY OVERRIDING ARDUINO STATE MACHINE!");
+        display.println("MANUALLY OVERRIDING ARDUINO STATE MACHINE!");
         display.println("USE THE MANUAL SWITCHES TO CONTROL THE MACHINE!");
+        display.println("Bottle Detect:   " +  pinHigh(bottleDetect));
+        display.println("Door Closed:     " +  pinHigh(doorDetect));
         display.display();
 
         // TURN OFF EVERYTHING
