@@ -9,13 +9,17 @@ Please see https://medium.com/@thomas.kilmar/arduino-cli-with-visual-studio-code
 
 This link is also helpful: https://arduino.github.io/arduino-cli/0.35/installation/
 
+**This is confirmed to work for macOS when `arduino-cli` is installed using [`brew`](https://formulae.brew.sh/formula/arduino-cli), which is the recommended installation method.**
+
+Once you have `arduino-cli` set up, go to VS Code and install the [Arduino](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino) extension by Microsoft.  Once installed, go to the settings.  Modify `Arduino: Command Path` to be `arduino-cli` and modify `Arduino: Path` to be `/usr/local/bin/`
+
 ### Windows
 
 This link should help for Windows: https://colddsam.medium.com/exploring-the-world-of-arduino-programming-in-visual-studio-code-bbcb4af982e7
 
 ## How To Use
 
-Each script must be a `.ino` format file and must reside in a folder with the same name as the file. 
+Each script must be a `.ino` format file and must reside in a folder with the same name as the file.
 
 ## Creating New Sketches
 
