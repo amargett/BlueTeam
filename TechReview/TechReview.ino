@@ -7,8 +7,8 @@ float time_to_pause = 2.0;
 
 // digital pins
 // inputs
-int buttonManualOverride = 0; // [HENRY] MANUAL OVERRIDE
-int buttonStartStop = 2;      // interrupt pin
+int buttonManualOverride = 2; // [HENRY] MANUAL OVERRIDE
+int buttonStartStop = 0;      // interrupt pin
 int soapSensor = 9;
 int overflow = 10;
 
@@ -62,7 +62,7 @@ void setup()
 
 void loop()
 {
-    if (pinHigh(buttonManualOverride) == true)
+    if (pinHigh(buttonManualOverride) == 1)
     {
         // IN THIS MANUAL OVERRIDE STATE, THE ARDUINO'S STATE MACHINE
         // WILL BE IGNORED.  INSTEAD, WE WILL HAVE MANUAL SWITCHES
@@ -85,6 +85,9 @@ void loop()
         OFF(doorLock);
         OFF(sol1);
         OFF(sol2);
+
+        Serial.println("MANUALLY OVERRIDING!");
+        Serial.println(pinHigh(buttonManualOverride));
     }
     else
     {
