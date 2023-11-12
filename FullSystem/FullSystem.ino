@@ -19,8 +19,8 @@ int doorLock = 6; //MOSFET
 int sol1 = 7; //relay
 int sol2 = 8; //relay
 
-int A1 = bottleDetect; //hall effect
-int A2 = doorDetect; //hall effect
+int bottleDetect = A1; //hall effect
+int doorDetect = A2; //hall effect
 
 //state variables
 // 1: Bottle has been placed & Door is closed, button turns green
@@ -64,7 +64,7 @@ void loop() {
     if (pinHigh(overflow)== true) ON(LEDs); // Liquid level overflow
     if (pinHigh(bottleDetect) & pinHigh(doorDetect)){ // if bottle present and door closed 
         if (state == 1) {
-            if (pinHigh(Button)== false) state = 2; 
+            if (pinHigh(button)== false) state = 2; 
         }
         if (state ==2){
             if (cycle_time = 0){
@@ -72,7 +72,7 @@ void loop() {
                 ON(heater);
                 cycle_time = millis();
             }
-            if (pinHigh(Button)== true) state = 4; 
+            if (pinHigh(button)== true) state = 4; 
             else Cycle();
         }
         if (state ==3){
@@ -152,5 +152,5 @@ void pauseCycle(){
         OFF(soapPump); 
         OFF(sol1); 
         OFF(sol2); 
-        OFF(doorlock); }
+        OFF(doorLock);  }
 }
