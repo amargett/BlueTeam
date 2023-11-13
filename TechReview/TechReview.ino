@@ -7,8 +7,13 @@ float time_to_pause = 2.0;
 
 // digital pins
 // inputs
-int buttonManualOverride = 2; // [HENRY] MANUAL OVERRIDE
-int buttonStartStop = 0;      // interrupt pin
+int buttonManualOverride = 0; // [HENRY] MANUAL OVERRIDE
+int buttonManualHeater = 1; // [HENRY] MANUALLY CONTROL HEATER
+int buttonManualSolenoid1 = 12; // [HENRY] MANUALLY CONTROL SOLENOID 1
+int buttonManualSolenoid2 = 13; // [HENRY] MANUALLY CONTROL SOLENOID 2
+int buttonManualDetergent = A3; // [HENRY] MANUALLY CONTROL DETERGENT PUMP
+
+int buttonStartStop = 2; // interrupt pin
 int soapSensor = 9;
 int overflow = 10;
 
@@ -57,7 +62,8 @@ void setup()
     pinMode(soapSensor, INPUT);
     pinMode(bottleDetect, INPUT);
     pinMode(overflow, INPUT_PULLUP);
-    pinMode(buttonManualOverride, INPUT); // [HENRY] Manual Override button
+    pinMode(buttonManualOverride, INPUT_PULLUP); // [HENRY] Manual Override button
+
 }
 
 void loop()
@@ -79,18 +85,25 @@ void loop()
         display.println("Door Closed:     " +  pinHigh(doorDetect));
         display.display();
 
-        // TURN OFF EVERYTHING
-        OFF(soapPump);
-        OFF(heater);
-        OFF(doorLock);
-        OFF(sol1);
-        OFF(sol2);
+        // WE SPOKE WITH STEVE, AND HE SAID TO DO THIS IN THE LOOP
+        pinMode(soapPump, INPUT);
+        pinMode(heater, INPUT);
+        pinMode(doorLock, INPUT);
+        pinMode(sol1, INPUT);
+        pinMode(sol2, INPUT);
 
         Serial.println("MANUALLY OVERRIDING!");
         Serial.println(pinHigh(buttonManualOverride));
     }
     else
     {
+        // WE SPOKE WITH STEVE, AND HE SAID TO DO THIS IN THE LOOP
+        pinMode(soapPump, OUTPUT);
+        pinMode(heater, OUTPUT);
+        pinMode(doorLock, OUTPUT);
+        pinMode(sol1, OUTPUT);
+        pinMode(sol2, OUTPUT);
+
         make_display();
         if (pinHigh(soapPump) == false)
             ON(LEDs); // check soap levels
