@@ -1,17 +1,20 @@
 int sensorPin = 2;
 int digitalVal;
-void setup() {
+void setup()
+{
   // put your setup code here, to run once:
   Serial.begin(9600);
   pinMode(sensorPin, INPUT_PULLUP);
 }
-void loop() {
+void loop()
+{
   // put your main code here, to run repeatedly:
   digitalVal = digitalRead(sensorPin);
-  if(digitalVal == HIGH) Serial.println(digitalVal);
+  if (digitalVal == HIGH)
+    Serial.println(digitalVal);
   delay(100);
-  //if (digitalVal == HIGH)
+  // if (digitalVal == HIGH)
   //{
-    //Serial.println(digitalVal);
+  // Serial.println(digitalVal);
   //}
 }

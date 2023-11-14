@@ -7,8 +7,8 @@ float time_to_pause = 2.0;
 
 // digital pins
 // inputs
-int buttonManualOverride = 0; // [HENRY] MANUAL OVERRIDE
-int buttonManualHeater = 1; // [HENRY] MANUALLY CONTROL HEATER
+int buttonManualOverride = 0;   // [HENRY] MANUAL OVERRIDE
+int buttonManualHeater = 1;     // [HENRY] MANUALLY CONTROL HEATER
 int buttonManualDetergent = A3; // [HENRY] MANUALLY CONTROL DETERGENT PUMP
 int buttonManualSolenoid1 = 12; // [HENRY] MANUALLY CONTROL SOLENOID 1
 int buttonManualSolenoid2 = 13; // [HENRY] MANUALLY CONTROL SOLENOID 2
@@ -63,8 +63,8 @@ void setup()
     pinMode(bottleDetect, INPUT);
     pinMode(overflow, INPUT_PULLUP);
 
-    pinMode(buttonManualOverride, INPUT_PULLUP); // [HENRY] Manual Override button
-    pinMode(buttonManualHeater, INPUT_PULLUP); // [HENRY] MANUALLY CONTROL HEATER
+    pinMode(buttonManualOverride, INPUT_PULLUP);  // [HENRY] Manual Override button
+    pinMode(buttonManualHeater, INPUT_PULLUP);    // [HENRY] MANUALLY CONTROL HEATER
     pinMode(buttonManualDetergent, INPUT_PULLUP); // [HENRY] MANUALLY CONTROL DETERGENT PUMP
     pinMode(buttonManualSolenoid1, INPUT_PULLUP); // [HENRY] MANUALLY CONTROL SOLENOID 1
     pinMode(buttonManualSolenoid2, INPUT_PULLUP); // [HENRY] MANUALLY CONTROL SOLENOID 2
@@ -85,8 +85,8 @@ void loop()
         display.clearDisplay();
         display.println("MANUALLY OVERRIDING ARDUINO STATE MACHINE!");
         display.println("USE THE MANUAL SWITCHES TO CONTROL THE MACHINE!");
-        display.println("Bottle Detect:   " +  pinHigh(bottleDetect));
-        display.println("Door Closed:     " +  pinHigh(doorDetect));
+        display.println("Bottle Detect:   " + pinHigh(bottleDetect));
+        display.println("Door Closed:     " + pinHigh(doorDetect));
         display.display();
 
         // WE SPOKE WITH STEVE, AND HE SAID TO DO THIS IN THE LOOP

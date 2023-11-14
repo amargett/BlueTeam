@@ -1,5 +1,6 @@
 # BlueTeam
-This is the code repository for [MIT's 2.009](https://2009.mit.edu) [Blue Team](https://2009.mit.edu/teams/team-pages/blue).  It is intended to be used for source control for Arduino code.
+
+This is the code repository for [MIT's 2.009](https://2009.mit.edu) [Blue Team](https://2009.mit.edu/teams/team-pages/blue). It is intended to be used for source control for Arduino code.
 
 ## Setup
 
@@ -11,7 +12,7 @@ This link is also helpful: https://arduino.github.io/arduino-cli/0.35/installati
 
 **This is confirmed to work for macOS when `arduino-cli` is installed using [`brew`](https://formulae.brew.sh/formula/arduino-cli), which is the recommended installation method.**
 
-Once you have `arduino-cli` set up, go to VS Code and install the [Arduino](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino) extension by Microsoft.  Once installed, go to the settings.  Modify `Arduino: Command Path` to be `arduino-cli` and modify `Arduino: Path` to be `/usr/local/bin/`
+Once you have `arduino-cli` set up, go to VS Code and install the [Arduino](https://marketplace.visualstudio.com/items?itemName=vsciot-vscode.vscode-arduino) extension by Microsoft. Once installed, go to the settings. Modify `Arduino: Command Path` to be `arduino-cli` and modify `Arduino: Path` to be `/usr/local/bin/`
 
 ### Windows
 
