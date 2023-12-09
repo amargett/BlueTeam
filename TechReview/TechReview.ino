@@ -7,11 +7,11 @@ float time_to_pause = 2.0;
 
 // digital pins
 // inputs
-int buttonManualOverride = 0; // [HENRY] MANUAL OVERRIDE
-int buttonManualHeater = 1; // [HENRY] MANUALLY CONTROL HEATER
+int buttonManualOverride = 0;   // [HENRY] MANUAL OVERRIDE
+int buttonManualHeater = 1;     // [HENRY] MANUALLY CONTROL HEATER
+int buttonManualDetergent = A3; // [HENRY] MANUALLY CONTROL DETERGENT PUMP
 int buttonManualSolenoid1 = 12; // [HENRY] MANUALLY CONTROL SOLENOID 1
 int buttonManualSolenoid2 = 13; // [HENRY] MANUALLY CONTROL SOLENOID 2
-int buttonManualDetergent = A3; // [HENRY] MANUALLY CONTROL DETERGENT PUMP
 
 int buttonStartStop = 2; // interrupt pin
 int soapSensor = 9;
@@ -62,8 +62,12 @@ void setup()
     pinMode(soapSensor, INPUT);
     pinMode(bottleDetect, INPUT);
     pinMode(overflow, INPUT_PULLUP);
-    pinMode(buttonManualOverride, INPUT_PULLUP); // [HENRY] Manual Override button
 
+    pinMode(buttonManualOverride, INPUT_PULLUP);  // [HENRY] Manual Override button
+    pinMode(buttonManualHeater, INPUT_PULLUP);    // [HENRY] MANUALLY CONTROL HEATER
+    pinMode(buttonManualDetergent, INPUT_PULLUP); // [HENRY] MANUALLY CONTROL DETERGENT PUMP
+    pinMode(buttonManualSolenoid1, INPUT_PULLUP); // [HENRY] MANUALLY CONTROL SOLENOID 1
+    pinMode(buttonManualSolenoid2, INPUT_PULLUP); // [HENRY] MANUALLY CONTROL SOLENOID 2
 }
 
 void loop()
@@ -81,11 +85,16 @@ void loop()
         display.clearDisplay();
         display.println("MANUALLY OVERRIDING ARDUINO STATE MACHINE!");
         display.println("USE THE MANUAL SWITCHES TO CONTROL THE MACHINE!");
-        display.println("Bottle Detect:   " +  pinHigh(bottleDetect));
-        display.println("Door Closed:     " +  pinHigh(doorDetect));
+        display.println("Bottle Detect:   " + pinHigh(bottleDetect));
+        display.println("Door Closed:     " + pinHigh(doorDetect));
         display.display();
 
         // WE SPOKE WITH STEVE, AND HE SAID TO DO THIS IN THE LOOP
+        pinMode(buttonManualHeater, OUTPUT);
+        pinMode(buttonManualDetergent, OUTPUT);
+        pinMode(buttonManualSolenoid1, OUTPUT);
+        pinMode(buttonManualSolenoid2, OUTPUT);
+
         pinMode(soapPump, INPUT);
         pinMode(heater, INPUT);
         pinMode(doorLock, INPUT);
@@ -93,11 +102,17 @@ void loop()
         pinMode(sol2, INPUT);
 
         Serial.println("MANUALLY OVERRIDING!");
-        Serial.println(pinHigh(buttonManualOverride));
+        Serial.println("BUTTON MANUAL OVERRIDE:  " + pinHigh(buttonManualOverride));
+        Serial.println("HEATER:  " + digitalRead(buttonManualHeater));
     }
     else
     {
         // WE SPOKE WITH STEVE, AND HE SAID TO DO THIS IN THE LOOP
+        pinMode(buttonManualHeater, INPUT);
+        pinMode(buttonManualDetergent, INPUT);
+        pinMode(buttonManualSolenoid1, INPUT);
+        pinMode(buttonManualSolenoid2, INPUT);
+
         pinMode(soapPump, OUTPUT);
         pinMode(heater, OUTPUT);
         pinMode(doorLock, OUTPUT);
